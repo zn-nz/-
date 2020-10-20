@@ -7,9 +7,8 @@
             'nav_item',
             { active: sortData[sortIndex].sortId == item.sortId }
           ]"
-          v-for="(item, index) in sortData"
+          v-for="(item) in sortData"
           :key="item.sortId"
-          @click="changeSortIndex(index)"
         >
           {{ item.title }}
         </div>
@@ -97,33 +96,6 @@ export default {
         }
       });
     },
-    getSort() {
-      return new Promise((resolve, reject) => {
-        if (this.$config.SERVE) {
-          this.axios
-            .get("/getSort")
-            .then(res => {
-              if (res.data.code == 1) {
-                this.sortData = res.data.data;
-                resolve();
-              } else {
-                reject();
-              }
-            })
-            .catch(err => {
-              console.log(err);
-              reject(err);
-            });
-        } else {
-          this.sortData = this.$config.SORT_DATA;
-          resolve();
-        }
-      });
-    },
-    changeSortIndex(index) {
-      this.sortIndex = index;
-      this.getPages();
-    },
     handleClose() {
       this.$emit("hide");
     },
@@ -162,14 +134,6 @@ export default {
     }
   },
   mounted() {
-    this.getSort()
-      .then(() => {
-        return this.getPages();
-      })
-      .then(() => {
-        // 数据已获取完成 Better Scroll 进行初始化
-        this.scrollerResize();
-      });
     window.addEventListener("resize", this.scrollerResize);
   }
 };
